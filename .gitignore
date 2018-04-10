@@ -3,3 +3,10 @@
 ################################################################################
 
 /AIProject/obj/Debug
+/AIProject/bin/Debug
+/Server/bin/Debug/netcoreapp2.0
+/Server/obj
+/ServerAPI/bin/Debug/netcoreapp2.0
+/ServerAPI/Migrations
+/ServerAPI/obj
+/.vs/AIProject/v15/Server/sqlite3
