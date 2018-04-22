@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace AIProject
 {
-
     public class Client
     {
         public Client(string ip, int port)
@@ -38,7 +37,7 @@ namespace AIProject
                 {
                     if (path.Length > 0 && path != string.Empty && ns.CanWrite)
                     {
-                        byte[] file = File.ReadAllBytes(path);
+                        byte[] file = System.IO.File.ReadAllBytes(path);
                         byte[] fileBuffer = new byte[file.Length];
                         ns.Write(file.ToArray(), 0, fileBuffer.GetLength(0));
 

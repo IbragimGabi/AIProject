@@ -11,3 +11,8 @@
 /ServerAPI/obj
 /.vs/AIProject/v15/Server/sqlite3
 /Server/Files
+/.vs
+/AIProject/packages/Json110r2.zip
+/AIProject/packages/Json110r2/Source
+/AIProject/packages/Json110r2/license.txt
+/AIProject/packages/Json110r2/readme.txt

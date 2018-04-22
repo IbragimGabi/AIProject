@@ -18,6 +18,5 @@ namespace ServerAPI
 
         public DbSet<User> Users { get; set; }
         public DbSet<File> Files { get; set; }
-        public DbSet<Password> Passwords { get; set; }
     }
 }
