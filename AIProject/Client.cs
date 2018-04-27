@@ -50,5 +50,10 @@ namespace AIProject
             mainThread.IsBackground = true;
             mainThread.Start();
         }
+
+        //public bool UploadFile(string filePath)
+        //{
+
+        //}
     }
 }

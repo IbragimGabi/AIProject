@@ -1,0 +1,133 @@
+﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Shell;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+
+namespace AIProject
+{
+    /// <summary>
+    /// Логика взаимодействия для MainWindow.xaml
+    /// </summary>
+    //public partial class MainWindow : Window
+    //{
+    //    private Client client;
+    //
+    //    public MainWindow()
+    //    {
+    //        InitializeComponent();
+    //        client = new Client("127.0.0.1", 808);
+    //        client.Run();
+    //    }
+    //
+    //    private void Button_Click(object sender, RoutedEventArgs e)
+    //    {
+    //        client.Run();
+    //        client.StartUploading("Start");
+    //    }
+    //}
+    public partial class MainWindow : Window
+    {
+        private Client client;
+        private string filepath = string.Empty;
+        public  string FilePath { get => filepath; set { filepath = value; UpdatePreview(); } }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            //client = new Client("127.0.0.1", 808);
+            //client.Run();
+        }
+
+        //private void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    client.Run();
+        //    client.StartUploading("Start");
+        //}
+
+        private void Button_SelectedFile(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "MP4 files (*.mp4)|*.mp4|AVI files (*.avi)|*.avi";
+
+            //If you need get File Path
+            if (openFileDialog.ShowDialog() == true)
+            {
+                FilePath = openFileDialog.FileName;
+            }
+        }
+
+        private void Button_Drop(object sender, DragEventArgs e)
+        {
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                FilePath = files[0]; // You URL Drop file
+            }
+        }
+
+        private void Button_UploadFile(object sender, RoutedEventArgs e)
+        {
+            if (FilePath != string.Empty)
+            {
+                client.StartUploading(FilePath);
+                client.Run();
+            }
+        }
+
+        /// Helpers
+
+        private void UpdatePreview()
+        {
+            if(FilePath!=string.Empty)
+            {
+                ShellFile shellFile = ShellFile.FromFilePath(FilePath);
+                Bitmap shellThumb = shellFile.Thumbnail.ExtraLargeBitmap;
+
+                UIPlusTextView.Visibility = Visibility.Collapsed;
+                UIImageView.Visibility = Visibility.Visible;
+                UIImageView.Source = BitmapToImageSource(shellThumb);
+            }
+            else
+            {
+                UIImageView.Visibility = Visibility.Collapsed;
+                UIPlusTextView.Visibility = Visibility.Visible;
+                UIImageView.Source = null;
+            }
+        }
+
+
+        BitmapImage BitmapToImageSource(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                BitmapImage bitmapimage = new BitmapImage();
+                bitmapimage.BeginInit();
+                bitmapimage.StreamSource = memory;
+                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapimage.EndInit();
+
+                return bitmapimage;
+            }
+        }
+    }
+
+}

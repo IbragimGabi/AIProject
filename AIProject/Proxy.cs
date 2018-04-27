@@ -79,5 +79,16 @@ namespace AIProject
             var result = _httpClient.SendAsync(message).Result;
             return JsonConvert.DeserializeObject<User>(result.Content.ReadAsStringAsync().Result);
         }
+
+
+        /// Работа с файлами
+        
+        public bool UploadFile(File file)
+        {
+           
+
+            return false;
+        }
+
     }
 }
