@@ -53,12 +53,6 @@ namespace AIProject
             //client.Run();
         }
 
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    client.Run();
-        //    client.StartUploading("Start");
-        //}
-
         private void Button_SelectedFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -126,6 +120,22 @@ namespace AIProject
                 bitmapimage.EndInit();
 
                 return bitmapimage;
+            }
+        }
+
+        private void Button_AuthClick(object sender, RoutedEventArgs e)
+        {
+            bool isAuth = false;
+            isAuth = (UIPasswordBox.Password.Length > 0);
+            //AuthMethod
+            //Тыры-пыры тут короче код будет
+            if (isAuth)
+            {
+                UIAuthView.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                MessageBox.Show("Text", "Header");
             }
         }
     }

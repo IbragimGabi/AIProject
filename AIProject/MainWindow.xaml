@@ -50,10 +50,25 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
-            <ProgressBar Minimum="0" Maximum="100" Value="64" Foreground="DarkCyan"
-                Style="{StaticResource DownloadPopupProgressBarStyle}" Height="10" Margin="0 0 0 10"/>
+            <!--<ProgressBar Minimum="0" Maximum="100" Value="64" Foreground="DarkCyan" Visibility="Collapsed"
+                Style="{StaticResource DownloadPopupProgressBarStyle}" Height="10" Margin="0 0 0 10"/>-->
             <Button Content="Save to..." Height="40" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
+
+        <Grid Name="UIAuthView" Grid.RowSpan="2" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+
+            <Image Grid.Row="0" Source="hedgehog-icon.png" Stretch="Uniform"/>
+
+            <StackPanel Grid.Row="1" Margin="15,10,10,10">
+                <TextBox Name="UIUsernameTextBox" Text=""/>
+                <PasswordBox Name="UIPasswordBox" Password=""/>
+                <Button Name="UIButtonLogin" Content="Log in" Click="Button_AuthClick" Style="{StaticResource ButtonStyle}"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 
 </Window>
