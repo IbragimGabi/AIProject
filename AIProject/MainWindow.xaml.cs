@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,13 +44,17 @@ namespace AIProject
     public partial class MainWindow : Window
     {
         private Client client;
+        private Proxy proxy;
         private string filepath = string.Empty;
-        public  string FilePath { get => filepath; set { filepath = value; UpdatePreview(); } }
+        public string FilePath { get => filepath; set { filepath = value; UpdatePreview(); } }
+        private string userName;
 
         public MainWindow()
         {
             InitializeComponent();
-            //client = new Client("127.0.0.1", 808);
+            client = new Client("127.0.0.1", 808);
+            //тут надо посмотреть на каком порту запускается сервер
+            proxy = new Proxy("http://localhost:2926/api/");
             //client.Run();
         }
 
@@ -83,13 +88,28 @@ namespace AIProject
                 client.StartUploading(FilePath);
                 client.Run();
             }
+
+            var fileInfo = new FileInfo(FilePath);
+            proxy.FinishFileUploading(userName, fileInfo.Name, CalculateMD5(fileInfo.FullName));
+        }
+
+        static string CalculateMD5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = System.IO.File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
         }
 
         /// Helpers
 
         private void UpdatePreview()
         {
-            if(FilePath!=string.Empty)
+            if (FilePath != string.Empty)
             {
                 ShellFile shellFile = ShellFile.FromFilePath(FilePath);
                 Bitmap shellThumb = shellFile.Thumbnail.ExtraLargeBitmap;
@@ -129,9 +149,11 @@ namespace AIProject
             isAuth = (UIPasswordBox.Password.Length > 0);
             //AuthMethod
             //Тыры-пыры тут короче код будет
+            isAuth = proxy.Login(UIUsernameTextBox.Text, UIPasswordBox.Password);
             if (isAuth)
             {
                 UIAuthView.Visibility = Visibility.Collapsed;
+                userName = UIUsernameTextBox.Text;
             }
             else
             {

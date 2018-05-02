@@ -12,7 +12,7 @@ namespace AIProject
 {
     public class Proxy
     {
-        private string baseUri = "http://localhost:2926/api/Users/";
+        private string baseUri = "http://localhost:2926/api/";
         private HttpClient _httpClient { get; set; }
         private string _token { get; set; } = null;
 
@@ -30,7 +30,7 @@ namespace AIProject
                 new KeyValuePair<string, string>("pasword", password)
             });
 
-            var result = _httpClient.PostAsync(baseUri + "Token", content).Result;
+            var result = _httpClient.PostAsync(baseUri + "Users/" + "Token", content).Result;
             var token = JsonConvert.DeserializeObject<TokenRespone>(result.Content.ReadAsStringAsync().Result);
 
             _token = token.access_token;
@@ -61,7 +61,7 @@ namespace AIProject
             });
 
 
-            var result2 = _httpClient.PostAsync(baseUri + "Token", content).Result;
+            var result2 = _httpClient.PostAsync(baseUri + "Users/" + "Token", content).Result;
             var token = JsonConvert.DeserializeObject<TokenRespone>(result.Content.ReadAsStringAsync().Result);
 
             _token = token.access_token;
@@ -75,19 +75,19 @@ namespace AIProject
             message.Method = HttpMethod.Get;
             message.Headers.Add("Authorization", _token);
 
-            message.RequestUri = new Uri($"{baseUri}{id}");
+            message.RequestUri = new Uri($"{baseUri}Users/{id}");
             var result = _httpClient.SendAsync(message).Result;
             return JsonConvert.DeserializeObject<User>(result.Content.ReadAsStringAsync().Result);
         }
 
-
-        /// Работа с файлами
-        
-        public bool UploadFile(File file)
+        public void FinishFileUploading(string userName, string fileName, string checkSum)
         {
-           
+            var message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.Headers.Add("Authorization", _token);
 
-            return false;
+            message.RequestUri = new Uri($"{baseUri}Files/{userName}/{fileName}/{checkSum}");
+            var result = _httpClient.SendAsync(message).Result;
         }
 
     }

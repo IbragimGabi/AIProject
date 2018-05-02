@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ServerAPI.Service;
 
 namespace ServerAPI
 {
@@ -14,6 +15,10 @@ namespace ServerAPI
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Server is started");
+            Server reader = new Server(808);
+            reader.Run();
+
             BuildWebHost(args).Run();
         }
 

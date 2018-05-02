@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServerAPI;
+using ServerAPI.DataAccess;
 
 namespace ServerAPI.Controllers
 {
@@ -14,10 +17,12 @@ namespace ServerAPI.Controllers
     public class FilesController : Controller
     {
         private readonly UserContext _context;
+        private readonly IUserRepository userRepository;
 
-        public FilesController(UserContext context)
+        public FilesController(UserContext context, IUserRepository userRepository)
         {
             _context = context;
+            this.userRepository = userRepository;
         }
 
         // GET: api/Files
@@ -25,6 +30,33 @@ namespace ServerAPI.Controllers
         public IEnumerable<File> GetFiles()
         {
             return _context.Files;
+        }
+
+
+        // GET: api/Files
+        [HttpPut("{userName}/{fileName}/{fileCheckSum}")]
+        public void DefineFileByCheckSum([FromRoute] string userName, [FromRoute] string fileName, [FromRoute] string fileCheckSum)
+        {
+            var user = userRepository.GetUserByUserName(userName);
+            var files = Directory.GetFiles(@".\Files\");
+            var file = files.First(_ => CalculateMD5(_) == fileCheckSum);
+            var newFile = Rename(file, fileName);
+            user.Files.Add(
+                new ServerAPI.File
+                {
+                    FileName = fileName,
+                    FilePath = newFile,
+                    CheckSum = fileCheckSum
+                });
+            userRepository.UpdateUser(user.UserId, user);
+        }
+
+        public static string Rename(string filePath, string newName)
+        {
+            var fileInfo = new FileInfo(filePath);
+            var newFilePath = fileInfo.Directory.FullName + "\\" + newName;
+            fileInfo.MoveTo(newFilePath);
+            return newFilePath;
         }
 
         // GET: api/Files/5
@@ -120,6 +152,18 @@ namespace ServerAPI.Controllers
         private bool FileExists(int id)
         {
             return _context.Files.Any(e => e.FileId == id);
+        }
+
+        static string CalculateMD5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = System.IO.File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ namespace ServerAPI.DataAccess
     {
         IEnumerable<User> GetUsers();
         User GetUser(int id);
+        User GetUserByUserName(string userName);
         void UpdateUser(int id, User user);
         void AddUser(User user);
         void DeleteUser(int id);

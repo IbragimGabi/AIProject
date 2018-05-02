@@ -72,5 +72,10 @@ namespace ServerAPI.DataAccess
         {
             return _context.Users.Any(e => e.UserId == id);
         }
+
+        public User GetUserByUserName(string userName)
+        {
+            return _context.Users.SingleOrDefault(m => m.UserName == userName);
+        }
     }
 }

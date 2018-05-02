@@ -4,7 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-namespace Server
+
+namespace ServerAPI.Service
 {
     public class Server
     {
@@ -12,7 +13,6 @@ namespace Server
         private MemoryStream ms;
         private int port;
         private string file;
-        private string fileName;
 
         public Server(int port)
         {
@@ -70,7 +70,7 @@ namespace Server
                     //Console.WriteLine(thisRead);
                     if (thisRead < blockSize && thisRead != 0)
                     {
-                        File.WriteAllBytes(@"C:\Users\Ibragim\source\repos\AIProject\Server\Files\file1.mp4", Convert2.ToByteArray(ms));
+                        System.IO.File.WriteAllBytes(@".\Files\file1.mp4", Convert2.ToByteArray(ms));
                         Console.WriteLine("File is uploaded");
                         loading = false;
                     }
