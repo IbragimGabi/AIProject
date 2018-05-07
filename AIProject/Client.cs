@@ -17,7 +17,7 @@ namespace AIProject
             this.port = port;
         }
         private NetworkStream ns;
-        private string path = string.Empty;
+        public string path = string.Empty;
         private string ip;
         private int port;
 

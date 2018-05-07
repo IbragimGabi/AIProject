@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -49,7 +50,75 @@ namespace ServerAPI.Controllers
                     CheckSum = fileCheckSum
                 });
             userRepository.UpdateUser(user.UserId, user);
+
+            int fileCount = SplitVideoToFrames(fileName);
+            fileCount = fileCount * 2;
+            StartProcessing(fileName);
+            while (fileCount != Directory.GetFiles($@".\{fileName}\").Length)
+            {
+            }
+            CombineFramesToVideo(fileName);
+
         }
+
+        public int SplitVideoToFrames(string fileName)
+        {
+            Directory.CreateDirectory($@".\{fileName}");
+            var command = $@" .\NN\ffmpeg\bin\ffmpeg.exe -i .\Files\{fileName} -y .\{fileName}\image%d.png -s WxH";
+
+            ProcessStartInfo processInfo;
+            Process process;
+
+            processInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            process = Process.Start(processInfo);
+            process.WaitForExit();
+            var files = Directory.GetFiles($@".\{fileName}\");
+            return files.Length;
+        }
+
+        public void StartProcessing(string fileName)
+        {
+            string strCmdText = $@"D:&D:\Work\Anaconda3\Scripts\activate.bat&activate tensorflow&cd C:\Users\Ibragim\source\repos\AIProject\ServerAPI\NN\NN\&python C:\Users\Ibragim\source\repos\AIProject\ServerAPI\NN\NN\Use.py C:\Users\Ibragim\source\repos\AIProject\ServerAPI\{fileName}\";
+
+            ProcessStartInfo processInfo;
+            Process process;
+
+            processInfo = new ProcessStartInfo("cmd.exe", "/c " + strCmdText)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            process = Process.Start(processInfo);
+        }
+
+        public void CombineFramesToVideo(string fileName)
+        {
+            Directory.CreateDirectory($@".\{fileName}");
+
+            var command = $@".\NN\ffmpeg\bin\ffmpeg.exe -f image2 -i .\{fileName}\out_image%d.png -y .\Files\out_{fileName} -s WxH -r 24";
+
+            ProcessStartInfo processInfo;
+            Process process;
+
+            processInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            process = Process.Start(processInfo);
+            process.WaitForExit();
+            Directory.Delete($@".\{fileName}", true);
+            if (System.IO.File.Exists($@".\Files\out_{fileName}") && System.IO.File.Exists($@".\Files\{fileName}"))
+                System.IO.File.Delete($@".\Files\out_{fileName}");
+        }
+
 
         public static string Rename(string filePath, string newName)
         {

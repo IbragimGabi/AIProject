@@ -12,7 +12,7 @@ namespace AIProject
 {
     public class Proxy
     {
-        private string baseUri = "http://localhost:2926/api/";
+        private string baseUri = "http://localhost:60950/api/";
         private HttpClient _httpClient { get; set; }
         private string _token { get; set; } = null;
 
@@ -27,10 +27,10 @@ namespace AIProject
             var content = new FormUrlEncodedContent(new[]
 {
                 new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("pasword", password)
+                new KeyValuePair<string, string>("password", password)
             });
 
-            var result = _httpClient.PostAsync(baseUri + "Users/" + "Token", content).Result;
+            var result = _httpClient.PostAsync(baseUri + "Users/Token", content).Result;
             var token = JsonConvert.DeserializeObject<TokenRespone>(result.Content.ReadAsStringAsync().Result);
 
             _token = token.access_token;
@@ -83,11 +83,11 @@ namespace AIProject
         public void FinishFileUploading(string userName, string fileName, string checkSum)
         {
             var message = new HttpRequestMessage();
-            message.Method = HttpMethod.Get;
+            message.Method = HttpMethod.Put;
             message.Headers.Add("Authorization", _token);
 
             message.RequestUri = new Uri($"{baseUri}Files/{userName}/{fileName}/{checkSum}");
-            var result = _httpClient.SendAsync(message).Result;
+            _httpClient.SendAsync(message);
         }
 
     }

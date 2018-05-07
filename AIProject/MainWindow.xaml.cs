@@ -54,7 +54,7 @@ namespace AIProject
             InitializeComponent();
             client = new Client("127.0.0.1", 808);
             //тут надо посмотреть на каком порту запускается сервер
-            proxy = new Proxy("http://localhost:2926/api/");
+            proxy = new Proxy("http://localhost:60950/api/");
             //client.Run();
         }
 
@@ -90,6 +90,10 @@ namespace AIProject
             }
 
             var fileInfo = new FileInfo(FilePath);
+            while (client.path != String.Empty)
+            {
+
+            }
             proxy.FinishFileUploading(userName, fileInfo.Name, CalculateMD5(fileInfo.FullName));
         }
 

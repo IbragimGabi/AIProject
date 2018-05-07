@@ -54,9 +54,9 @@ namespace ServerAPI
                     });
 
             services.AddMvc();
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
-            services.AddDbContext<UserContext>(options => 
+            services.AddDbContext<UserContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
 
 

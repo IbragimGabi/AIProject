@@ -58,7 +58,6 @@ namespace ServerAPI.Service
             {
                 if (ns.CanRead)
                 {
-
                     thisRead = ns.Read(dataByte, 0, blockSize);
                     ms.Write(dataByte, 0, thisRead);
                     if (loading == false && thisRead == blockSize)

@@ -16,8 +16,7 @@ using ServerAPI.Token;
 
 namespace ServerAPI.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Users")]
+    [Route("api/[controller]")]
     public class UsersController : Controller
     {
         private readonly IUserRepository userRepository;
@@ -25,8 +24,13 @@ namespace ServerAPI.Controllers
         {
             this.userRepository = userRepository;
         }
+        [HttpPost("Hello")]
+        public string Hello()
+        {
+            return "Hello world";
+        }
 
-        [HttpPost("/token")]
+        [HttpPost("Token")]
         public async Task Token()
         {
             var username = Request.Form["username"];
