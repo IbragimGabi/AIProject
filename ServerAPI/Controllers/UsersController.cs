@@ -24,11 +24,6 @@ namespace ServerAPI.Controllers
         {
             this.userRepository = userRepository;
         }
-        [HttpPost("Hello")]
-        public string Hello()
-        {
-            return "Hello world";
-        }
 
         [HttpPost("Token")]
         public async Task Token()

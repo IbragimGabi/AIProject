@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,6 +96,22 @@ namespace AIProject
 
             }
             proxy.FinishFileUploading(userName, fileInfo.Name, CalculateMD5(fileInfo.FullName));
+        }
+
+        private void Button_SaveClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string downloadURL = proxy.GetLastUserFile(userName);
+                string savePath = $@".\Files\{downloadURL.Split('\\').Last()}";
+                WebClient wc = new WebClient();
+
+                wc.DownloadFile(downloadURL, savePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         static string CalculateMD5(string filename)

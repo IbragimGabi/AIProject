@@ -10,6 +10,7 @@ namespace AIProject
         public int FileId { get; set; }
         public string FilePath { get; set; }
         public string FileName { get; set; }
+        public string CheckSum { get; set; }
 
         public int? UserId { get; set; }
         public User User { get; set; }

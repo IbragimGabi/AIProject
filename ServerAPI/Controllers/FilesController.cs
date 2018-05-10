@@ -26,13 +26,6 @@ namespace ServerAPI.Controllers
             this.userRepository = userRepository;
         }
 
-        // GET: api/Files
-        [HttpGet]
-        public IEnumerable<File> GetFiles()
-        {
-            return _context.Files;
-        }
-
 
         // GET: api/Files
         [HttpPut("{userName}/{fileName}/{fileCheckSum}")]
@@ -58,8 +51,24 @@ namespace ServerAPI.Controllers
             {
             }
             CombineFramesToVideo(fileName);
-
         }
+
+        [HttpGet("GetFilePath/{userName}/{fileName}")]
+        public string GetFilePath([FromRoute] string userName, [FromRoute] string fileName)
+        {
+            var user = userRepository.GetUserByUserName(userName);
+            var file = user.Files.SingleOrDefault(_ => fileName.Contains(_.FileName));
+            return file.FilePath.Replace(file.FileName, "out_" + fileName);
+        }
+
+        [HttpGet("GetLastUserFile/{userName}")]
+        public string GetLastUserFile([FromRoute] string userName)
+        {
+            var user = userRepository.GetUserByUserName(userName);
+            var file = user.Files.Last();
+            return file.FilePath.Replace(file.FileName, "out_" + file.FileName);
+        }
+
 
         public int SplitVideoToFrames(string fileName)
         {
@@ -101,22 +110,22 @@ namespace ServerAPI.Controllers
         {
             Directory.CreateDirectory($@".\{fileName}");
 
-            var command = $@".\NN\ffmpeg\bin\ffmpeg.exe -f image2 -i .\{fileName}\out_image%d.png -y .\Files\out_{fileName} -s WxH -r 24";
+            var command = $@".\NN\ffmpeg\bin\ffmpeg.exe -f image2 -i .\{fileName}\out_image%d.png -y .\Files\out_{fileName} -s WxH";
 
             ProcessStartInfo processInfo;
             Process process;
 
             processInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
             {
-                CreateNoWindow = true,
+                CreateNoWindow = false,
                 UseShellExecute = false
             };
 
             process = Process.Start(processInfo);
             process.WaitForExit();
-            Directory.Delete($@".\{fileName}", true);
-            if (System.IO.File.Exists($@".\Files\out_{fileName}") && System.IO.File.Exists($@".\Files\{fileName}"))
-                System.IO.File.Delete($@".\Files\out_{fileName}");
+            //Directory.Delete($@".\{fileName}", true);
+            //if (System.IO.File.Exists($@".\Files\out_{fileName}") && System.IO.File.Exists($@".\Files\{fileName}"))
+            //    System.IO.File.Delete($@".\Files\{fileName}");
         }
 
 

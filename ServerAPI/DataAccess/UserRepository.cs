@@ -75,7 +75,18 @@ namespace ServerAPI.DataAccess
 
         public User GetUserByUserName(string userName)
         {
-            return _context.Users.SingleOrDefault(m => m.UserName == userName);
+            //return _context.Users.SingleOrDefault(m => m.UserName == userName);
+            var user = _context.Users.SingleOrDefault(m => m.UserName == userName);
+            var files = _context.Files;
+            foreach (var file in files)
+            {
+                if (file.UserId == user.UserId)
+                {
+                    user.Files.Add(file);
+                }
+            }
+            user.Files = user.Files.Distinct().ToList();
+            return user;
         }
     }
 }

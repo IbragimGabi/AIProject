@@ -90,5 +90,26 @@ namespace AIProject
             _httpClient.SendAsync(message);
         }
 
+        public string GetFilePath(string userName, string fileName)
+        {
+            var message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.Headers.Add("Authorization", _token);
+
+            message.RequestUri = new Uri($"{baseUri}Files/GetFilePath/{userName}/{fileName}");
+            var result = _httpClient.SendAsync(message).Result;
+            return JsonConvert.DeserializeObject<string>(result.Content.ReadAsStringAsync().Result);
+        }
+
+        public string GetLastUserFile(string userName)
+        {
+            var message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.Headers.Add("Authorization", _token);
+
+            message.RequestUri = new Uri($"{baseUri}Files/GetLastUserFile/{userName}");
+            var result = _httpClient.SendAsync(message).Result;
+            return JsonConvert.DeserializeObject<string>(result.Content.ReadAsStringAsync().Result);
+        }
     }
 }
