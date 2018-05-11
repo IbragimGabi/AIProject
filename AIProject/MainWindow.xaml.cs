@@ -168,7 +168,7 @@ namespace AIProject
 
         // AUTHORIZATION
 
-        private void Button_AuthClick(object sender, RoutedEventArgs e)
+        private void ButtonAuth_Click(object sender, RoutedEventArgs e)
         {
             bool isAuth = false;
             isAuth = (UIPasswordBox.Password.Length > 0) || (UIUsernameTextBox.Text.Length > 0);
@@ -184,6 +184,11 @@ namespace AIProject
             {
                 MessageBox.Show("Error", "Empty fields");
             }
+        }
+
+        private void ButtonReg_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
 
