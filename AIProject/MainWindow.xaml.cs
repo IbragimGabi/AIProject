@@ -53,9 +53,9 @@ namespace AIProject
         public MainWindow()
         {
             InitializeComponent();
-            client = new Client("127.0.0.1", 808);
+            //client = new Client("127.0.0.1", 808);
             //тут надо посмотреть на каком порту запускается сервер
-            proxy = new Proxy("http://localhost:60950/api/");
+            //proxy = new Proxy("http://localhost:60950/api/");
             //client.Run();
         }
 
@@ -164,13 +164,17 @@ namespace AIProject
             }
         }
 
+
+
+        // AUTHORIZATION
+
         private void Button_AuthClick(object sender, RoutedEventArgs e)
         {
             bool isAuth = false;
-            isAuth = (UIPasswordBox.Password.Length > 0);
+            isAuth = (UIPasswordBox.Password.Length > 0) || (UIUsernameTextBox.Text.Length > 0);
             //AuthMethod
             //Тыры-пыры тут короче код будет
-            isAuth = proxy.Login(UIUsernameTextBox.Text, UIPasswordBox.Password);
+            //isAuth = proxy.Login(UIUsernameTextBox.Text, UIPasswordBox.Password);
             if (isAuth)
             {
                 UIAuthView.Visibility = Visibility.Collapsed;
@@ -178,9 +182,13 @@ namespace AIProject
             }
             else
             {
-                MessageBox.Show("Text", "Header");
+                MessageBox.Show("Error", "Empty fields");
             }
         }
+
+
+
+        // REGISTRATION
     }
 
 }
