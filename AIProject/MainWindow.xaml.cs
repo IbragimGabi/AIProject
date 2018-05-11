@@ -62,6 +62,7 @@ namespace AIProject
             //client.Run();
 
 
+            UICloudView.Visibility = Visibility.Collapsed;
             UIAuthView.Visibility = Visibility.Visible;
             UIRegView.Visibility = Visibility.Collapsed;
         }
@@ -122,24 +123,25 @@ namespace AIProject
             }
             else
             {
-                MessageBox.Show("Sorry", "Offline processing is not available now");
+                MessageBox.Show("Offline processing is not available now", "Sorry");
             }
         }
 
         private void Button_SaveClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                string downloadURL = proxy.GetLastUserFile(userName);
-                string savePath = $@".\Files\{downloadURL.Split('\\').Last()}";
-                WebClient wc = new WebClient();
+            UICloudView.Visibility = Visibility.Visible;
+            //try
+            //{
+            //    string downloadURL = proxy.GetLastUserFile(userName);
+            //    string savePath = $@".\Files\{downloadURL.Split('\\').Last()}";
+            //    WebClient wc = new WebClient();
 
-                wc.DownloadFile(downloadURL, savePath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            //    wc.DownloadFile(downloadURL, savePath);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.ToString());
+            //}
         }
 
         static string CalculateMD5(string filename)
@@ -192,9 +194,20 @@ namespace AIProject
             }
         }
 
-        
-        
-        
+
+
+        // CLOUD
+
+        private void CloudButtonGoBack_Click(object sender, RoutedEventArgs e)
+        {
+            UICloudView.Visibility = Visibility.Collapsed;
+        }
+
+        private void CloudButtonLoad_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         // AUTHORIZATION
 
         private void ButtonAuth_Click(object sender, RoutedEventArgs e)
@@ -257,6 +270,8 @@ namespace AIProject
                 MessageBox.Show("Fields are empty", "Error");
             }
         }
+
+
     }
 
 }

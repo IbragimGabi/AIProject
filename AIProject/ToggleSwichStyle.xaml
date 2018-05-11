@@ -20,7 +20,7 @@
                             <TextBlock Name="leftTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center"
                                        FontSize="16" Grid.Column="0" Text="Online" FontWeight="Medium"/>
 
-                            <Border Name="rightbackground" BorderBrush="{x:Null}" Grid.Column="1" Background="DarkCyan" CornerRadius="0 3 3 0"/>
+                            <Border Name="rightbackground" BorderBrush="{x:Null}" Grid.Column="1" Background="Gray" CornerRadius="0 3 3 0"/>
 
                             <TextBlock Name="rightTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center"
                                        FontSize="16" Grid.Column="1" Text="Offline" Foreground="White" FontWeight="Medium"/>
@@ -35,9 +35,9 @@
                                     <Storyboard>
 
                                         <ColorAnimation Storyboard.TargetProperty="Foreground.Color" To="White" Duration="0:0:0.2" />
-                                        <ColorAnimation Storyboard.TargetProperty="Background.Color" To="DarkCyan" Duration="0:0:0.2" />
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color" To="Gray" Duration="0:0:0.2" />
 
-                                        <ColorAnimation Storyboard.TargetName="leftbackground" Storyboard.TargetProperty="Background.Color" To="DarkCyan" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetName="leftbackground" Storyboard.TargetProperty="Background.Color" To="Gray" Duration="0:0:0.2"/>
                                         <ColorAnimation Storyboard.TargetName="rightbackground" Storyboard.TargetProperty="Background.Color" To="LightGray" Duration="0:0:0.2" />
 
                                         <ColorAnimation Storyboard.TargetName="leftTextBlock" Storyboard.TargetProperty="Foreground.Color" To="White" Duration="0:0:0.2" />
@@ -54,7 +54,7 @@
                                         <ColorAnimation Storyboard.TargetProperty="Background.Color" To="White" Duration="0:0:0.2" />
 
                                         <ColorAnimation Storyboard.TargetName="leftbackground" Storyboard.TargetProperty="Background.Color" To="LightGray" Duration="0:0:0.2" />
-                                        <ColorAnimation Storyboard.TargetName="rightbackground" Storyboard.TargetProperty="Background.Color" To="DarkCyan" Duration="0:0:0.2" />
+                                        <ColorAnimation Storyboard.TargetName="rightbackground" Storyboard.TargetProperty="Background.Color" To="Gray" Duration="0:0:0.2" />
 
                                         <ColorAnimation Storyboard.TargetName="leftTextBlock" Storyboard.TargetProperty="Foreground.Color" To="Black" Duration="0:0:0.2" />
                                         <ColorAnimation Storyboard.TargetName="rightTextBlock" Storyboard.TargetProperty="Foreground.Color"  To="White" Duration="0:0:0.2" />
