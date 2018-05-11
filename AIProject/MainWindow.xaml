@@ -43,10 +43,14 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <ToggleButton Content="Online" Style="{StaticResource AnimatedDoubleSwitch}" IsChecked="True"
+
+            <ToggleButton Name="UIProcessingToggleButton" Click="ProcessTypeToggleButton_Click"
+                          Content="Online" Style="{StaticResource AnimatedDoubleSwitch}" IsChecked="True"
                           Height="40" Margin="0 0 0 10"/>
 
-            <Button Content="Upload file" Height="40" Style="{StaticResource ButtonStyle}" Click="Button_UploadFile"/>
+            <Button Name="UIProcessingButton" Click="ProcessingButton_Click" 
+                    Content="Upload file" 
+                    Height="40" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
@@ -55,10 +59,12 @@
             <Button Content="Save to..." Click="Button_SaveClick" Height="40" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
 
-        <Grid Name="UIAuthView" Grid.RowSpan="2" Background="White">
+        
+        <!--AUTH-->
+        <Grid Name="UIAuthView" Grid.RowSpan="2" Background="White" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="5*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="160"/>
             </Grid.RowDefinitions>
 
             <Image Grid.Row="0" Source="hedgehog-icon.png" Stretch="Uniform"/>
@@ -69,13 +75,13 @@
                     <ColumnDefinition Width="7*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
 
                     <RowDefinition Height="0.5*"/>
 
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="36"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Username" TextAlignment="Right" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
@@ -85,9 +91,64 @@
                 <PasswordBox Name="UIPasswordBox" Password="" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="8,2,0,2"/>
 
                 <Button Name="UIButtonLogin" Content="Log in" Click="ButtonAuth_Click" Style="{StaticResource ButtonStyle}" Margin="0,4,0,2" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"/>
-                <Button Name="UIButtonReg" Content="Registrate" Click="ButtonReg_Click" Style="{StaticResource ButtonStyle}" Margin="0,2,0,4" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" />
+                <Button Name="UIButtonReg" Content="Register" Click="ButtonReg_Click" Style="{StaticResource ButtonStyle}" Margin="0,2,0,4" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" />
             </Grid>
         </Grid>
+
+        <!--REG-->
+        <Grid Name="UIRegView" Grid.RowSpan="2" Background="White" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="160"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+
+                <Button Name="UIRegButtonGoBack" Click="RegButtonGoBack_Click" 
+                        Grid.Row="0" 
+                        HorizontalAlignment="Left" Width="40"
+                        Content="Back"
+                        Background="Transparent" BorderBrush="Transparent"/>
+
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="10,15,10,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    
+                    <RowDefinition Height="0.5*"/>
+
+                    <RowDefinition Height="36"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Email" TextAlignment="Right" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
+                <TextBox Name="UIRegEmailTextBox" Text="" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="8,2,0,2"/>
+
+                <TextBlock Text="Username" TextAlignment="Right" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
+                <TextBox Name="UIRegUsernameTextBox" Text="" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="8,2,0,2"/>
+
+                <TextBlock Text="Password" TextAlignment="Right" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"/>
+                <PasswordBox Name="UIRegPasswordBox" Password="" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="8,2,0,2"/>
+
+
+                <Button Name="UIRegButtonRegister" Click="RegButtonRegister_Click" 
+                        Style="{StaticResource ButtonStyle}" Margin="0,4,0,2" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"
+                        Content="Register"/>
+
+            </Grid>
+
+        </Grid>
+
+
     </Grid>
 
 </Window>

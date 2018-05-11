@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -50,13 +51,19 @@ namespace AIProject
         public string FilePath { get => filepath; set { filepath = value; UpdatePreview(); } }
         private string userName;
 
+        private bool isProcessingOnline;
+
         public MainWindow()
         {
             InitializeComponent();
-            //client = new Client("127.0.0.1", 808);
+            client = new Client("127.0.0.1", 808);
             //тут надо посмотреть на каком порту запускается сервер
-            //proxy = new Proxy("http://localhost:60950/api/");
+            proxy = new Proxy("http://localhost:60950/api/");
             //client.Run();
+
+
+            UIAuthView.Visibility = Visibility.Visible;
+            UIRegView.Visibility = Visibility.Collapsed;
         }
 
         private void Button_SelectedFile(object sender, RoutedEventArgs e)
@@ -82,20 +89,41 @@ namespace AIProject
             }
         }
 
-        private void Button_UploadFile(object sender, RoutedEventArgs e)
+        private void ProcessTypeToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (FilePath != string.Empty)
+            ToggleButton button = (ToggleButton)sender;
+            isProcessingOnline = (bool)button.IsChecked;
+            if (isProcessingOnline)
             {
-                client.StartUploading(FilePath);
-                client.Run();
-            }
-
-            var fileInfo = new FileInfo(FilePath);
-            while (client.path != String.Empty)
+                UIProcessingButton.Content = "Upload video";
+            } 
+            else
             {
-
+                UIProcessingButton.Content = "Process video";
             }
-            proxy.FinishFileUploading(userName, fileInfo.Name, CalculateMD5(fileInfo.FullName));
+        }
+
+        private void ProcessingButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isProcessingOnline)
+            {
+                if (FilePath != string.Empty)
+                {
+                    client.StartUploading(FilePath);
+                    client.Run();
+                }
+
+                var fileInfo = new FileInfo(FilePath);
+                while (client.path != String.Empty)
+                {
+
+                }
+                proxy.FinishFileUploading(userName, fileInfo.Name, CalculateMD5(fileInfo.FullName));
+            }
+            else
+            {
+                MessageBox.Show("Sorry", "Offline processing is not available now");
+            }
         }
 
         private void Button_SaveClick(object sender, RoutedEventArgs e)
@@ -164,8 +192,9 @@ namespace AIProject
             }
         }
 
-
-
+        
+        
+        
         // AUTHORIZATION
 
         private void ButtonAuth_Click(object sender, RoutedEventArgs e)
@@ -182,18 +211,52 @@ namespace AIProject
             }
             else
             {
-                MessageBox.Show("Error", "Empty fields");
+                MessageBox.Show("Fields are empty", "Error");
             }
         }
 
         private void ButtonReg_Click(object sender, RoutedEventArgs e)
         {
-
+            UIRegView.Visibility = Visibility.Visible;
         }
 
 
 
+        
         // REGISTRATION
+
+        private void RegButtonGoBack_Click(object sender, RoutedEventArgs e)
+        {
+            UIRegView.Visibility = Visibility.Collapsed;
+        }
+
+        private void RegButtonRegister_Click(object sender, RoutedEventArgs e)
+        {
+            string email = UIRegEmailTextBox.Text;
+            string username = UIRegUsernameTextBox.Text;
+            string password = UIRegPasswordBox.Password;
+
+            if (email.Length > 0 || username.Length > 0 || password.Length > 0)
+            {
+                bool regSuccess;
+                //regSuccess = /*Тут нужно зарегаться*/
+                regSuccess = true;
+
+                if (regSuccess)
+                {
+                    UIRegView.Visibility = Visibility.Collapsed;
+                    UIAuthView.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    MessageBox.Show("Unable to register with this details", "Registration error");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Fields are empty", "Error");
+            }
+        }
     }
 
 }
