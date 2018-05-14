@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServerAPI;
 using ServerAPI.DataAccess;
+using ServerAPI.Service;
 
 namespace ServerAPI.Controllers
 {
@@ -19,11 +20,13 @@ namespace ServerAPI.Controllers
     {
         private readonly UserContext _context;
         private readonly IUserRepository userRepository;
+        private readonly VideoService videoService;
 
-        public FilesController(UserContext context, IUserRepository userRepository)
+        public FilesController(UserContext context, IUserRepository userRepository, VideoService videoService)
         {
             _context = context;
             this.userRepository = userRepository;
+            this.videoService = videoService;
         }
 
 
@@ -44,13 +47,26 @@ namespace ServerAPI.Controllers
                 });
             userRepository.UpdateUser(user.UserId, user);
 
-            int fileCount = SplitVideoToFrames(fileName);
+            int fileCount = videoService.SplitVideoToFrames(fileName);
             fileCount = fileCount * 2;
-            StartProcessing(fileName);
+            videoService.StartProcessing(fileName);
             while (fileCount != Directory.GetFiles($@".\{fileName}\").Length)
             {
             }
-            CombineFramesToVideo(fileName);
+            videoService.CombineFramesToVideo(fileName);
+        }
+
+        // GET: api/Files
+        [HttpGet("ProcessVideo/{filePath}")]
+        public void ProcessVideo([FromRoute] string filePath)
+        {
+            int fileCount = videoService.SplitVideoToFramesAbsolute(filePath);
+            fileCount = fileCount * 2;
+            videoService.StartProcessingAbsolute(filePath);
+            while (fileCount != Directory.GetFiles($@".\{filePath}\").Length)
+            {
+            }
+            videoService.CombineFramesToVideoAbsolute(filePath);
         }
 
         [HttpGet("GetFilePath/{userName}/{fileName}")]
@@ -69,64 +85,16 @@ namespace ServerAPI.Controllers
             return file.FilePath.Replace(file.FileName, "out_" + file.FileName);
         }
 
-
-        public int SplitVideoToFrames(string fileName)
+        [HttpGet("GetUserFiles/{userName}")]
+        public File[] GetUserFiles([FromRoute] string userName)
         {
-            Directory.CreateDirectory($@".\{fileName}");
-            var command = $@" .\NN\ffmpeg\bin\ffmpeg.exe -i .\Files\{fileName} -y .\{fileName}\image%d.png -s WxH";
-
-            ProcessStartInfo processInfo;
-            Process process;
-
-            processInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
-            {
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-
-            process = Process.Start(processInfo);
-            process.WaitForExit();
-            var files = Directory.GetFiles($@".\{fileName}\");
-            return files.Length;
+            var user = userRepository.GetUserByUserName(userName);
+            var files = user.Files.ToList().FindAll(_ => _.UserId == user.UserId);
+            files.ForEach(_ => _.FilePath.Replace(_.FileName, "out_" + _.FileName));
+            return files.ToArray();
         }
 
-        public void StartProcessing(string fileName)
-        {
-            string strCmdText = $@"D:&D:\Work\Anaconda3\Scripts\activate.bat&activate tensorflow&cd C:\Users\Ibragim\source\repos\AIProject\ServerAPI\NN\NN\&python C:\Users\Ibragim\source\repos\AIProject\ServerAPI\NN\NN\Use.py C:\Users\Ibragim\source\repos\AIProject\ServerAPI\{fileName}\";
 
-            ProcessStartInfo processInfo;
-            Process process;
-
-            processInfo = new ProcessStartInfo("cmd.exe", "/c " + strCmdText)
-            {
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-
-            process = Process.Start(processInfo);
-        }
-
-        public void CombineFramesToVideo(string fileName)
-        {
-            Directory.CreateDirectory($@".\{fileName}");
-
-            var command = $@".\NN\ffmpeg\bin\ffmpeg.exe -f image2 -i .\{fileName}\out_image%d.png -y .\Files\out_{fileName} -s WxH";
-
-            ProcessStartInfo processInfo;
-            Process process;
-
-            processInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
-            {
-                CreateNoWindow = false,
-                UseShellExecute = false
-            };
-
-            process = Process.Start(processInfo);
-            process.WaitForExit();
-            //Directory.Delete($@".\{fileName}", true);
-            //if (System.IO.File.Exists($@".\Files\out_{fileName}") && System.IO.File.Exists($@".\Files\{fileName}"))
-            //    System.IO.File.Delete($@".\Files\{fileName}");
-        }
 
 
         public static string Rename(string filePath, string newName)

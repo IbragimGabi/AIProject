@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ServerAPI.Token;
 using ServerAPI.DataAccess;
+using ServerAPI.Service;
 
 namespace ServerAPI
 {
@@ -55,11 +56,10 @@ namespace ServerAPI
 
             services.AddMvc();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<VideoService>();
 
             services.AddDbContext<UserContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -23,26 +23,6 @@ using System.Windows.Shapes;
 
 namespace AIProject
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
-    //public partial class MainWindow : Window
-    //{
-    //    private Client client;
-    //
-    //    public MainWindow()
-    //    {
-    //        InitializeComponent();
-    //        client = new Client("127.0.0.1", 808);
-    //        client.Run();
-    //    }
-    //
-    //    private void Button_Click(object sender, RoutedEventArgs e)
-    //    {
-    //        client.Run();
-    //        client.StartUploading("Start");
-    //    }
-    //}
     public partial class MainWindow : Window
     {
         private Client client;
@@ -50,6 +30,7 @@ namespace AIProject
         private string filepath = string.Empty;
         public string FilePath { get => filepath; set { filepath = value; UpdatePreview(); } }
         private string userName;
+        private List<File> files;
 
         private bool isProcessingOnline;
 
@@ -65,7 +46,25 @@ namespace AIProject
             UICloudView.Visibility = Visibility.Collapsed;
             UIAuthView.Visibility = Visibility.Visible;
             UIRegView.Visibility = Visibility.Collapsed;
+            //UICloudListView
+            if (!String.IsNullOrEmpty(userName))
+                UpdateCloudList();
         }
+
+        public void UpdateCloudList()
+        {
+            UICloudListView.Items.Clear();
+            var files = proxy.GetUserFiles(userName).ToList();
+            files.ForEach(_ => UICloudListView.Items.Add(
+                    new ListViewItem()
+                    {
+                        Content = _.FileName
+                    }
+                    )
+                );
+            this.files = files;
+        }
+
 
         private void Button_SelectedFile(object sender, RoutedEventArgs e)
         {
@@ -97,7 +96,7 @@ namespace AIProject
             if (isProcessingOnline)
             {
                 UIProcessingButton.Content = "Upload video";
-            } 
+            }
             else
             {
                 UIProcessingButton.Content = "Process video";
@@ -130,6 +129,7 @@ namespace AIProject
         private void Button_SaveClick(object sender, RoutedEventArgs e)
         {
             UICloudView.Visibility = Visibility.Visible;
+            UpdateCloudList();
             //try
             //{
             //    string downloadURL = proxy.GetLastUserFile(userName);
@@ -146,6 +146,7 @@ namespace AIProject
 
         static string CalculateMD5(string filename)
         {
+
             using (var md5 = MD5.Create())
             {
                 using (var stream = System.IO.File.OpenRead(filename))
@@ -205,7 +206,19 @@ namespace AIProject
 
         private void CloudButtonLoad_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                string selectedValue = (UICloudListView.SelectedItem as ListViewItem).Content.ToString();
+                string downloadURL = files.Find(_ => _.FileName == selectedValue).FilePath;
+                string savePath = $@".\Files\{downloadURL.Split('\\').Last()}";
+                WebClient wc = new WebClient();
 
+                wc.DownloadFile(downloadURL, savePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         // AUTHORIZATION
@@ -216,7 +229,7 @@ namespace AIProject
             isAuth = (UIPasswordBox.Password.Length > 0) || (UIUsernameTextBox.Text.Length > 0);
             //AuthMethod
             //Тыры-пыры тут короче код будет
-            //isAuth = proxy.Login(UIUsernameTextBox.Text, UIPasswordBox.Password);
+            isAuth = proxy.Login(UIUsernameTextBox.Text, UIPasswordBox.Password);
             if (isAuth)
             {
                 UIAuthView.Visibility = Visibility.Collapsed;
@@ -235,7 +248,7 @@ namespace AIProject
 
 
 
-        
+
         // REGISTRATION
 
         private void RegButtonGoBack_Click(object sender, RoutedEventArgs e)
@@ -251,9 +264,17 @@ namespace AIProject
 
             if (email.Length > 0 || username.Length > 0 || password.Length > 0)
             {
-                bool regSuccess;
+                bool regSuccess = false;
                 //regSuccess = /*Тут нужно зарегаться*/
-                regSuccess = true;
+                var user = new User()
+                {
+                    Email = email,
+                    UserName = userName,
+                    Password = password
+                };
+
+                if (proxy.RegisterUser(user) != null)
+                    regSuccess = true;
 
                 if (regSuccess)
                 {

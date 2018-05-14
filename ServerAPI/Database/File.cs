@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace ServerAPI
@@ -13,6 +15,8 @@ namespace ServerAPI
         public string CheckSum { get; set; }
 
         public int? UserId { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public User User { get; set; }
     }
 }

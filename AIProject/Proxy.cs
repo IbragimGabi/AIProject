@@ -111,5 +111,16 @@ namespace AIProject
             var result = _httpClient.SendAsync(message).Result;
             return JsonConvert.DeserializeObject<string>(result.Content.ReadAsStringAsync().Result);
         }
+
+        public File[] GetUserFiles(string userName)
+        {
+            var message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.Headers.Add("Authorization", _token);
+
+            message.RequestUri = new Uri($"{baseUri}Files/GetUserFiles/{userName}");
+            var result = _httpClient.SendAsync(message).Result;
+            return JsonConvert.DeserializeObject<File[]>(result.Content.ReadAsStringAsync().Result);
+        }
     }
 }
