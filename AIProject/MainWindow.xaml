@@ -82,10 +82,12 @@
                       Grid.Row="2">
                 <ListView.View>
                     <GridView>
-                        <!--DisplayMemberBinding="{Binding Path=Title}"-->
+                        <!--DisplayMemberBinding="{Binding Path=Title}"--><!--
                         <GridViewColumn Width="220">Title</GridViewColumn>
-                        <!--DisplayMemberBinding="{Binding Path=Company}"-->
-                        <GridViewColumn Width="80">ID</GridViewColumn>
+                        --><!--DisplayMemberBinding="{Binding Path=Company}"--><!--
+                        <GridViewColumn Width="80">ID</GridViewColumn>-->
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Ready" DisplayMemberBinding="{Binding Ready}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

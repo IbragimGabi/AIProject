@@ -94,8 +94,21 @@ namespace ServerAPI.Controllers
             return files.ToArray();
         }
 
-
-
+        [HttpGet("GetFilesStatus/{userName}/{fileName}")]
+        public bool GetFilesStatus([FromRoute] string userName, [FromRoute] string fileName)
+        {
+            var user = userRepository.GetUserByUserName(userName);
+            var file = user.Files.ToList().FindAll(_ => _.UserId == user.UserId).FirstOrDefault(_ => fileName.Contains(_.FileName));
+            if (file != null)
+            {
+                if (System.IO.File.Exists(file.FilePath.Replace(file.FileName, "out_" + file.FileName)))
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
 
         public static string Rename(string filePath, string newName)
         {

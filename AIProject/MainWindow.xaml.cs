@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using AIProject.Model;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Shell;
 using System;
 using System.Collections.Generic;
@@ -56,9 +57,10 @@ namespace AIProject
             UICloudListView.Items.Clear();
             var files = proxy.GetUserFiles(userName).ToList();
             files.ForEach(_ => UICloudListView.Items.Add(
-                    new ListViewItem()
+                    new FileItem()
                     {
-                        Content = _.FileName
+                        Name = _.FileName,
+                        Ready = proxy.GetFilesStatus(userName, _.FileName).ToString()
                     }
                     )
                 );
@@ -206,18 +208,20 @@ namespace AIProject
 
         private void CloudButtonLoad_Click(object sender, RoutedEventArgs e)
         {
+            string selectedValue = null;
             try
             {
-                string selectedValue = (UICloudListView.SelectedItem as ListViewItem).Content.ToString();
-                string downloadURL = files.Find(_ => _.FileName == selectedValue).FilePath;
+                selectedValue = (UICloudListView.SelectedItem as FileItem).Name.ToString();
+                string downloadURL = files.Find(_ => _.FileName == selectedValue).FilePath.Replace(selectedValue, "out_" + selectedValue);
                 string savePath = $@".\Files\{downloadURL.Split('\\').Last()}";
                 WebClient wc = new WebClient();
 
                 wc.DownloadFile(downloadURL, savePath);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show(ex.ToString());
+                if (String.IsNullOrEmpty(selectedValue))
+                    MessageBox.Show("Please choose file");
             }
         }
 

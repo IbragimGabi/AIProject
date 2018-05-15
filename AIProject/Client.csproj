@@ -66,6 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\File.cs" />
+    <Compile Include="Model\FileItem.cs" />
     <Compile Include="Model\TokenRespone.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="Model\User.cs" />
